@@ -38,14 +38,14 @@ export const fetchFilmsByGenre = async (genreId: number): Promise<Film[]> => {
     );
     
     if (!response.ok) {
-      throw new Error('Failed to fetch films');
+      throw new Error(`Failed to fetch films: ${response.status} ${response.statusText}`);
     }
     
     const data: ApiResponse = await response.json();
-    return data.results;
+    return data?.results || [];
   } catch (error) {
     console.error('Error fetching films:', error);
-    return [];
+    throw error; // Re-throw to allow components to handle errors
   }
 };
 
@@ -70,18 +70,24 @@ export const fetchFilmById = async (id: string): Promise<Film | null> => {
     );
     
     if (!response.ok) {
-      throw new Error('Failed to fetch film');
+      if (response.status === 404) {
+        throw new Error('Film not found');
+      }
+      throw new Error(`Failed to fetch film: ${response.status} ${response.statusText}`);
     }
     
     const data: Film = await response.json();
     return data;
   } catch (error) {
     console.error('Error fetching film:', error);
-    return null;
+    throw error; // Re-throw to allow components to handle errors
   }
 };
 
 export const getImageUrl = (path: string, size: 'w500' | 'w780' | 'original' = 'w500'): string => {
   if (!path) return '';
   return `https://image.tmdb.org/t/p/${size}${path}`;
-}; 
+};
+
+// Re-export safe data utilities
+export { formatDate, formatRating } from '../utils/safeData'; 
