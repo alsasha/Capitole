@@ -3,31 +3,6 @@
   position: relative;
   color: white;
 
-  &__backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -2;
-
-    img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-  }
-
-  &__backdrop-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: -1;
-  }
-
   &__content {
     position: relative;
     z-index: 1;
@@ -35,6 +10,7 @@
     display: flex;
     flex-direction: column;
     gap: 2rem;
+    min-height: 100vh;
   }
 
   &__header {
@@ -186,6 +162,14 @@
 .film-detail--comedy {
   // Apply playful, fun fonts for comedy films
   font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  
+  .film-detail__content {
+    background: linear-gradient(135deg, rgba(0, 210, 211, 0.1), rgba(84, 160, 255, 0.1));
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(0, 210, 211, 0.2);
+  }
   
   .film-detail__header {
     .back-button {
@@ -321,6 +305,14 @@
 .film-detail--horror {
   // Apply dark, mysterious fonts for horror films
   font-family: 'Creepster', 'Chiller', cursive;
+  background: linear-gradient(135deg, #2c3e50 0%, #34495e 100%);
+  
+  .film-detail__content {
+    background: linear-gradient(135deg, rgba(231, 76, 60, 0.1), rgba(192, 57, 43, 0.1));
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(231, 76, 60, 0.2);
+  }
   
   .film-detail__header {
     .back-button {
@@ -467,8 +459,15 @@
 }
 
 .film-detail--scifi {
-  // Apply futuristic, tech fonts for sci-fi films
   font-family: 'Orbitron', 'Courier New', monospace;
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  
+  .film-detail__content {
+    background: linear-gradient(135deg, rgba(155, 89, 182, 0.1), rgba(52, 152, 219, 0.1));
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    box-shadow: 0 20px 40px rgba(155, 89, 182, 0.2);
+  }
   
   .film-detail__header {
     .back-button {

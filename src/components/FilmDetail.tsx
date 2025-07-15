@@ -73,14 +73,6 @@ const FilmDetail: React.FC = () => {
 
   return (
     <div className={`film-detail film-detail--${category}`}>
-      <div className="film-detail__backdrop">
-        <img 
-          src={getImageUrl(film.backdrop_path, 'original')} 
-          alt={film.title}
-        />
-        <div className="film-detail__backdrop-overlay"></div>
-      </div>
-
       <div className="film-detail__content">
         {/* Header Section */}
         <header className="film-detail__header">
