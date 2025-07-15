@@ -88,39 +88,44 @@ const FilmDetail: React.FC<FilmDetailProps> = ({ initialData }) => {
   };
 
   if (loading) {
-    return <div className="loading">Loading film details...</div>;
+    return <main className="loading">Loading film details...</main>;
   }
 
   if (!film) {
     return (
-      <div className="error">
+      <main className="error">
         <h2>Film not found</h2>
         <Link to="/" className="back-link">Back to Home</Link>
-      </div>
+      </main>
     );
   }
 
   const inWishList = isInWishList(film.id);
-  console.log('film', film);
+  // console.log('film', film);
 
   return (
-    <div className={`film-detail film-detail--${category}`}>
+    <main className={`film-detail film-detail--${category}`}>
       <div className="film-detail__content">
         {/* Header Section */}
         <header className="film-detail__header">
+          <nav aria-label="Film detail navigation">
+          <Link to="/">
           <button 
-            onClick={() => navigate(-1)} 
-            className="back-button"
-          >
-            ← Back
-          </button>
-          <Link to="/wishlist" className="wishlist-link">
-            My Wishlist
-          </Link>
+              onClick={() => navigate(-1)} 
+              className="back-button"
+            >
+               Back
+            </button>
+            </Link>
+            
+            <Link to="/wishlist" className="wishlist-link">
+              My Wishlist
+            </Link>
+          </nav>
         </header>
 
         {/* Mid-Section: Image Area + Button/Description Area */}
-        <div className="film-detail__mid-section">
+        <section className="film-detail__mid-section">
           {/* Image Area */}
           <div className="film-detail__image-area">
             <img 
@@ -134,7 +139,7 @@ const FilmDetail: React.FC<FilmDetailProps> = ({ initialData }) => {
             <h1 className="film-detail__title">{film.title}</h1>
             
             <div className="film-detail__meta">
-              <span className="film-detail__rating">★ {film.vote_average.toFixed(1)}</span>
+              <span className="film-detail__rating"> {film.vote_average.toFixed(1)}</span>
               <span className="film-detail__year">
                 {new Date(film.release_date).getFullYear()}
               </span>
@@ -148,13 +153,13 @@ const FilmDetail: React.FC<FilmDetailProps> = ({ initialData }) => {
                 inWishList ? 'wishlist-button--active' : ''
               }`}
             >
-              {inWishList ? '❤️ Remove from Wishlist' : '🤍 Add to Wishlist'}
+              {inWishList ? ' Remove from Wishlist' : ' Add to Wishlist'}
             </button>
           </div>
-        </div>
+        </section>
 
         {/* Additional Info Area */}
-        <div className="film-detail__additional-info">
+        <section className="film-detail__additional-info">
           <div className="film-detail__genres">
             <h3>Genres</h3>
             <div className="genre-tags">
@@ -183,9 +188,9 @@ const FilmDetail: React.FC<FilmDetailProps> = ({ initialData }) => {
               <span className="detail-value">{film.id}</span>
             </div>
           </div>
-        </div>
+        </section>
       </div>
-    </div>
+    </main>
   );
 };
 

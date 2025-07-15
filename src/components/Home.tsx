@@ -37,8 +37,6 @@ const Home: React.FC<HomeProps> = ({ initialData }) => {
   });
 
   // Use initial data if available (SSR) and contains home page data
-
-
   const films = hasSSRData
     ? {
         comedy: Array.isArray(initialData.comedy) ? initialData.comedy : [],
@@ -47,44 +45,44 @@ const Home: React.FC<HomeProps> = ({ initialData }) => {
       }
     : filmsByCategory;
 
-
-
   if (loading && !initialData) {
     return (
-      <div className="home">
+      <main className="home">
         <LoadingSpinner 
           size="large" 
           text={UI_CONFIG.LOADING.TEXT}
           className="home__loading"
         />
-      </div>
+      </main>
     );
   }
 
   if (error && !initialData) {
     return (
-      <div className="home">
+      <main className="home">
         <ErrorMessage 
           message={error}
           onRetry={refetchAll}
           className="home__error"
         />
-      </div>
+      </main>
     );
   }
 
   return (
-    <div className="home">
+    <main className="home">
       <header className="home__header">
         <h1>Film Explorer</h1>
-        <Link to={ROUTES.WISHLIST}>
-          <Button variant="primary" size="medium">
-            My Wishlist
-          </Button>
-        </Link>
+        <nav aria-label="Main navigation">
+          <Link to={ROUTES.WISHLIST}>
+            <Button variant="primary" size="medium">
+              My Wishlist
+            </Button>
+          </Link>
+        </nav>
       </header>
 
-      <main className="home__content">
+      <section className="home__content">
         <section className="carousel-section">
           <h2>Comedy Films</h2>
           <FilmCarousel 
@@ -108,8 +106,8 @@ const Home: React.FC<HomeProps> = ({ initialData }) => {
             category={FILM_CATEGORIES.SCIFI} 
           />
         </section>
-      </main>
-    </div>
+      </section>
+    </main>
   );
 };
 

@@ -19,10 +19,10 @@ const WishList: React.FC = () => {
   }
 
   return (
-    <div className="wishlist">
+    <main className="wishlist">
       <header className="wishlist__header">
         <h1>My Wishlist ({wishList.length} films)</h1>
-        <div className="wishlist__header-actions">
+        <nav aria-label="Wishlist navigation" className="wishlist__header-actions">
           <Button 
             onClick={clearWishList}
             variant="danger"
@@ -36,11 +36,11 @@ const WishList: React.FC = () => {
               Back to Home
             </Button>
           </Link>
-        </div>
+        </nav>
       </header>
 
-      <main className="wishlist__content">
-        <div className="wishlist__grid">
+      <section className="wishlist__content">
+        <section className="wishlist__grid">
           {wishList.map((film) => (
             <FilmCard
               key={film.id}
@@ -51,9 +51,9 @@ const WishList: React.FC = () => {
               onRemove={removeFromWishList}
             />
           ))}
-        </div>
-      </main>
-    </div>
+        </section>
+      </section>
+    </main>
   );
 };
 
