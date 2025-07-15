@@ -77,16 +77,6 @@
       }
     }
   }
-
-  &__empty {
-    text-align: center;
-    padding: 2rem;
-    color: rgba(255, 255, 255, 0.7);
-    font-style: italic;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
-    backdrop-filter: blur(10px);
-  }
 }
 
 .film-card {
@@ -111,8 +101,7 @@
     height: 300px;
     overflow: hidden;
 
-    img,
-    .safe-image {
+    img {
       width: 100%;
       height: 100%;
       object-fit: cover;

@@ -1,8 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useWishList } from '../context/WishListContext';
-import { getImageUrl, formatRating } from '../services/api';
-import SafeImage from './SafeImage';
+import { getImageUrl } from '../services/api';
 import './WishList.scss';
 
 const WishList: React.FC = () => {
@@ -37,17 +36,17 @@ const WishList: React.FC = () => {
             <div key={film.id} className="wishlist-item">
               <Link to={`/film/${film.id}`} className="wishlist-item__link">
                 <div className="wishlist-item__image">
-                  <SafeImage 
+                  <img 
                     src={getImageUrl(film.poster_path)} 
-                    alt={film.title || 'Film poster'}
+                    alt={film.title}
                     loading="lazy"
                   />
                 </div>
                 <div className="wishlist-item__info">
-                  <h3>{film.title || 'Untitled'}</h3>
-                  <p className="wishlist-item__rating">★ {formatRating(film.vote_average)}</p>
+                  <h3>{film.title}</h3>
+                  <p className="wishlist-item__rating">★ {film.vote_average.toFixed(1)}</p>
                   <p className="wishlist-item__year">
-                    {film.release_date ? new Date(film.release_date).getFullYear() : 'Unknown'}
+                    {new Date(film.release_date).getFullYear()}
                   </p>
                 </div>
               </Link>

@@ -3,13 +3,22 @@ import { Link } from 'react-router-dom';
 import { fetchFilmsByCategory, getImageUrl, type Film } from '../services/api';
 import './Home.scss';
 
-const Home: React.FC = () => {
-  const [comedyFilms, setComedyFilms] = useState<Film[]>([]);
-  const [horrorFilms, setHorrorFilms] = useState<Film[]>([]);
-  const [scifiFilms, setScifiFilms] = useState<Film[]>([]);
-  const [loading, setLoading] = useState(true);
+interface HomeProps {
+  initialData?: {
+    comedy: Film[];
+    horror: Film[];
+    scifi: Film[];
+  } | null;
+}
+
+const Home: React.FC<HomeProps> = ({ initialData }) => {
+  const [comedyFilms, setComedyFilms] = useState<Film[]>(initialData?.comedy || []);
+  const [horrorFilms, setHorrorFilms] = useState<Film[]>(initialData?.horror || []);
+  const [scifiFilms, setScifiFilms] = useState<Film[]>(initialData?.scifi || []);
+  const [loading, setLoading] = useState(!initialData);
 
   useEffect(() => {
+    if (initialData) return;
     const fetchAllFilms = async () => {
       try {
         const [comedy, horror, scifi] = await Promise.all([
@@ -29,7 +38,7 @@ const Home: React.FC = () => {
     };
 
     fetchAllFilms();
-  }, []);
+  }, [initialData]);
 
   if (loading) {
     return <div className="loading">Loading films...</div>;
