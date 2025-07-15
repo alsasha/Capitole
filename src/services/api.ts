@@ -33,19 +33,28 @@ export const GENRE_CATEGORIES = {
 
 export const fetchFilmsByGenre = async (genreId: number): Promise<Film[]> => {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    
     const response = await fetch(
-      `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&page=1&with_genres=${genreId}&sort_by=popularity.desc`
+      `${BASE_URL}/discover/movie?api_key=${API_KEY}&language=en-US&page=1&with_genres=${genreId}&sort_by=popularity.desc`,
+      { signal: controller.signal }
     );
     
+    clearTimeout(timeoutId);
+    
     if (!response.ok) {
-      throw new Error('Failed to fetch films');
+      throw new Error(`Failed to fetch films: ${response.status} ${response.statusText}`);
     }
     
     const data: ApiResponse = await response.json();
     return data.results;
   } catch (error) {
     console.error('Error fetching films:', error);
-    return [];
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Request timeout - please try again');
+    }
+    throw error; // Re-throw to let the hook handle it
   }
 };
 
@@ -65,19 +74,28 @@ export const fetchFilmsByCategory = async (category: string): Promise<Film[]> =>
 
 export const fetchFilmById = async (id: string): Promise<Film | null> => {
   try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+    
     const response = await fetch(
-      `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US&append_to_response=genres`
+      `${BASE_URL}/movie/${id}?api_key=${API_KEY}&language=en-US&append_to_response=genres`,
+      { signal: controller.signal }
     );
     
+    clearTimeout(timeoutId);
+    
     if (!response.ok) {
-      throw new Error('Failed to fetch film');
+      throw new Error(`Failed to fetch film: ${response.status} ${response.statusText}`);
     }
     
     const data: Film = await response.json();
     return data;
   } catch (error) {
     console.error('Error fetching film:', error);
-    return null;
+    if (error instanceof Error && error.name === 'AbortError') {
+      throw new Error('Request timeout - please try again');
+    }
+    throw error; // Re-throw to let the caller handle it
   }
 };
 

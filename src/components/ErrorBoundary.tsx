@@ -1,5 +1,6 @@
-import { Component } from 'react';
-import type { ErrorInfo, ReactNode } from 'react';
+import React, { Component, type ReactNode } from 'react';
+import { ErrorMessage } from './ui/ErrorMessage';
+import './ErrorBoundary.scss';
 
 interface Props {
   children: ReactNode;
@@ -11,7 +12,7 @@ interface State {
   error?: Error;
 }
 
-class ErrorBoundary extends Component<Props, State> {
+export class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = { hasError: false };
@@ -21,9 +22,16 @@ class ErrorBoundary extends Component<Props, State> {
     return { hasError: true, error };
   }
 
-  componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    
+    // In a real app, you might want to log this to an error reporting service
+    // logErrorToService(error, errorInfo);
   }
+
+  handleRetry = () => {
+    this.setState({ hasError: false, error: undefined });
+  };
 
   render() {
     if (this.state.hasError) {
@@ -33,23 +41,10 @@ class ErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="error-boundary">
-          <div className="error-boundary__content">
-            <h1>Something went wrong</h1>
-            <p>We're sorry, but something unexpected happened. Please try refreshing the page.</p>
-            <button 
-              onClick={() => window.location.reload()} 
-              className="error-boundary__button"
-            >
-              Refresh Page
-            </button>
-            {import.meta.env.DEV && this.state.error && (
-              <details className="error-boundary__details">
-                <summary>Error Details (Development)</summary>
-                <pre>{this.state.error.message}</pre>
-                <pre>{this.state.error.stack}</pre>
-              </details>
-            )}
-          </div>
+          <ErrorMessage 
+            message="Something went wrong. Please try refreshing the page."
+            onRetry={this.handleRetry}
+          />
         </div>
       );
     }

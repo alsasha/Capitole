@@ -1,6 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { fetchFilmsByCategory, getImageUrl, type Film } from '../services/api';
+import { getImageUrl, type Film } from '../services/api';
+import { useMultipleFilms } from '../hooks/useFilms';
+import { LoadingSpinner } from './ui/LoadingSpinner';
+import { ErrorMessage } from './ui/ErrorMessage';
+import { FILM_CATEGORIES, ROUTES, UI_CONFIG } from '../constants';
 import './Home.scss';
 
 interface HomeProps {
@@ -12,104 +16,69 @@ interface HomeProps {
   } | null;
 }
 
-// Local storage keys and cache expiration time (1 hour)
-const STORAGE_KEYS = {
-  COMEDY: 'films_comedy',
-  HORROR: 'films_horror',
-  SCIFI: 'films_scifi',
-} as const;
-
-// Helper functions for localStorage
-const getCachedData = (key: string) => {
-  try {
-    const data = localStorage.getItem(key);
-    return data ? JSON.parse(data) : null;
-  } catch (error) {
-    console.error('Error reading from localStorage:', error);
-    return null;
-  }
-};
-
-const setCachedData = (key: string, data: any) => {
-  try {
-    localStorage.setItem(key, JSON.stringify(data));
-  } catch (error) {
-    console.error('Error writing to localStorage:', error);
-  }
-};
-
 const Home: React.FC<HomeProps> = ({ initialData }) => {
-  const [comedyFilms, setComedyFilms] = useState<Film[]>(initialData?.comedy || []);
-  const [horrorFilms, setHorrorFilms] = useState<Film[]>(initialData?.horror || []);
-  const [scifiFilms, setScifiFilms] = useState<Film[]>(initialData?.scifi || []);
-  const [loading, setLoading] = useState(!initialData);
+  const categories = React.useMemo(() => Object.values(FILM_CATEGORIES), []);
+  
+  // Only use the hook if we don't have SSR data for the home page
+  // Check if we have actual home page data (not film detail data)
+  const hasSSRData = !!(initialData && 
+    (Array.isArray(initialData.comedy) || 
+     Array.isArray(initialData.horror) || 
+     Array.isArray(initialData.scifi)));
+  
+  const {
+    filmsByCategory,
+    loading,
+    error,
+    refetchAll
+  } = useMultipleFilms({
+    categories,
+    enableCache: true,
+    skip: hasSSRData // Add skip option to prevent fetching when we have SSR data
+  });
 
-  useEffect(() => {
-    // If we have initial data from SSR for the home page (not film detail), use it
-    if (initialData && (initialData.comedy || initialData.horror || initialData.scifi)) {
-      setComedyFilms(initialData.comedy || []);
-      setHorrorFilms(initialData.horror || []);
-      setScifiFilms(initialData.scifi || []);
-      setLoading(false);
-      
-      // Cache the SSR data
-      setCachedData(STORAGE_KEYS.COMEDY, initialData.comedy || []);
-      setCachedData(STORAGE_KEYS.HORROR, initialData.horror || []);
-      setCachedData(STORAGE_KEYS.SCIFI, initialData.scifi || []);
-      return;
-    }
+  // Use initial data if available (SSR) and contains home page data
 
-    // Check if we have valid cached data
-    const cachedComedy = getCachedData(STORAGE_KEYS.COMEDY);
-    const cachedHorror = getCachedData(STORAGE_KEYS.HORROR);
-    const cachedScifi = getCachedData(STORAGE_KEYS.SCIFI);
-    
-    if (cachedComedy && cachedHorror && cachedScifi) {
-      setComedyFilms(cachedComedy);
-      setHorrorFilms(cachedHorror);
-      setScifiFilms(cachedScifi);
-      setLoading(false);
-      return;
-    }
 
-    // Otherwise, fetch data from API
-    const fetchAllFilms = async () => {
-      setLoading(true);
-      try {
-        const [comedy, horror, scifi] = await Promise.all([
-          fetchFilmsByCategory('comedy'),
-          fetchFilmsByCategory('horror'),
-          fetchFilmsByCategory('scifi')
-        ]);
-
-        // Update state
-        setComedyFilms(comedy);
-        setHorrorFilms(horror);
-        setScifiFilms(scifi);
-
-        // Cache the data
-        setCachedData(STORAGE_KEYS.COMEDY, comedy);
-        setCachedData(STORAGE_KEYS.HORROR, horror);
-        setCachedData(STORAGE_KEYS.SCIFI, scifi);
-      } catch (error) {
-        console.error('Error fetching films:', error);
-      } finally {
-        setLoading(false);
+  const films = hasSSRData
+    ? {
+        comedy: Array.isArray(initialData.comedy) ? initialData.comedy : [],
+        horror: Array.isArray(initialData.horror) ? initialData.horror : [],
+        scifi: Array.isArray(initialData.scifi) ? initialData.scifi : []
       }
-    };
+    : filmsByCategory;
 
-    fetchAllFilms();
-  }, [initialData]);
 
-  if (loading) {
-    return <div className="loading">Loading films...</div>;
+
+  if (loading && !initialData) {
+    return (
+      <div className="home">
+        <LoadingSpinner 
+          size="large" 
+          text={UI_CONFIG.LOADING.TEXT}
+          className="home__loading"
+        />
+      </div>
+    );
+  }
+
+  if (error && !initialData) {
+    return (
+      <div className="home">
+        <ErrorMessage 
+          message={error}
+          onRetry={refetchAll}
+          className="home__error"
+        />
+      </div>
+    );
   }
 
   return (
     <div className="home">
       <header className="home__header">
         <h1>Film Explorer</h1>
-        <Link to="/wishlist" className="wishlist-link">
+        <Link to={ROUTES.WISHLIST} className="wishlist-link">
           My Wishlist
         </Link>
       </header>
@@ -117,17 +86,26 @@ const Home: React.FC<HomeProps> = ({ initialData }) => {
       <main className="home__content">
         <section className="carousel-section">
           <h2>Comedy Films</h2>
-          <FilmCarousel films={comedyFilms} category="comedy" />
+          <FilmCarousel 
+            films={films.comedy || []} 
+            category={FILM_CATEGORIES.COMEDY} 
+          />
         </section>
 
         <section className="carousel-section">
           <h2>Horror Films</h2>
-          <FilmCarousel films={horrorFilms} category="horror" />
+          <FilmCarousel 
+            films={films.horror || []} 
+            category={FILM_CATEGORIES.HORROR} 
+          />
         </section>
 
         <section className="carousel-section">
           <h2>Sci-Fi Films</h2>
-          <FilmCarousel films={scifiFilms} category="scifi" />
+          <FilmCarousel 
+            films={films.scifi || []} 
+            category={FILM_CATEGORIES.SCIFI} 
+          />
         </section>
       </main>
     </div>
@@ -140,13 +118,21 @@ interface FilmCarouselProps {
 }
 
 const FilmCarousel: React.FC<FilmCarouselProps> = ({ films, category }) => {
+  if (films.length === 0) {
+    return (
+      <div className="film-carousel film-carousel--empty">
+        <p>No films available in this category.</p>
+      </div>
+    );
+  }
+
   return (
     <div className="film-carousel">
       <div className="film-carousel__container">
         {films.map((film) => (
           <Link 
             key={film.id} 
-            to={`/film/${film.id}`} 
+            to={`${ROUTES.FILM_DETAIL.replace(':id', film.id.toString())}`}
             className="film-card"
             data-category={category}
           >
