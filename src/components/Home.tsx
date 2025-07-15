@@ -1,9 +1,8 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { getImageUrl, type Film } from '../services/api';
+import { type Film } from '../services/api';
 import { useMultipleFilms } from '../hooks/useFilms';
-import { LoadingSpinner } from './ui/LoadingSpinner';
-import { ErrorMessage } from './ui/ErrorMessage';
+import { LoadingSpinner, ErrorMessage, FilmCard, Button } from './ui';
 import { FILM_CATEGORIES, ROUTES, UI_CONFIG } from '../constants';
 import './Home.scss';
 
@@ -78,8 +77,10 @@ const Home: React.FC<HomeProps> = ({ initialData }) => {
     <div className="home">
       <header className="home__header">
         <h1>Film Explorer</h1>
-        <Link to={ROUTES.WISHLIST} className="wishlist-link">
-          My Wishlist
+        <Link to={ROUTES.WISHLIST}>
+          <Button variant="primary" size="medium">
+            My Wishlist
+          </Button>
         </Link>
       </header>
 
@@ -130,24 +131,12 @@ const FilmCarousel: React.FC<FilmCarouselProps> = ({ films, category }) => {
     <div className="film-carousel">
       <div className="film-carousel__container">
         {films.map((film) => (
-          <Link 
-            key={film.id} 
-            to={`${ROUTES.FILM_DETAIL.replace(':id', film.id.toString())}`}
-            className="film-card"
+          <FilmCard
+            key={film.id}
+            film={film}
+            variant="carousel"
             data-category={category}
-          >
-            <div className="film-card__image">
-              <img 
-                src={getImageUrl(film.poster_path)} 
-                alt={film.title}
-                loading="lazy"
-              />
-            </div>
-            <div className="film-card__info">
-              <h3>{film.title}</h3>
-              <p className="film-card__rating">★ {film.vote_average.toFixed(1)}</p>
-            </div>
-          </Link>
+          />
         ))}
       </div>
     </div>

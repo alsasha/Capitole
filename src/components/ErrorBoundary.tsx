@@ -1,5 +1,5 @@
 import React, { Component, type ReactNode } from 'react';
-import { ErrorMessage } from './ui/ErrorMessage';
+import { ErrorMessage } from './ui';
 import './ErrorBoundary.scss';
 
 interface Props {
