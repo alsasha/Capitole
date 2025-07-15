@@ -19,8 +19,18 @@ const Home: React.FC<HomeProps> = ({ initialData }) => {
   const [loading, setLoading] = useState(!initialData);
 
   useEffect(() => {
-    if (initialData) return;
+    // If we have initial data from SSR for the home page (not film detail), use it
+    if (initialData && (initialData.comedy || initialData.horror || initialData.scifi)) {
+      setComedyFilms(initialData.comedy || []);
+      setHorrorFilms(initialData.horror || []);
+      setScifiFilms(initialData.scifi || []);
+      setLoading(false);
+      return;
+    }
+
+    // Otherwise, fetch data on the client
     const fetchAllFilms = async () => {
+      setLoading(true);
       try {
         const [comedy, horror, scifi] = await Promise.all([
           fetchFilmsByCategory('comedy'),
