@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { fetchFilmById, getImageUrl, type Film, GENRE_CATEGORIES } from '../services/api';
 import { useWishList } from '../context/WishListContext';
+import { Button } from './ui';
 import './FilmDetail.scss';
 
 interface FilmDetailProps {
@@ -17,15 +18,21 @@ const FilmDetail: React.FC<FilmDetailProps> = ({ initialData }) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToWishList, removeFromWishList, isInWishList } = useWishList();
-  const [film, setFilm] = useState<Film | null>(initialData?.film || null);
-  const [loading, setLoading] = useState(!initialData?.film);
+  const [film, setFilm] = useState<Film | null>(null);
+  const [loading, setLoading] = useState(true);
   const [category, setCategory] = useState<string>('');
 
   useEffect(() => {
-    if (initialData?.film) {
-      // Use the film from SSR data
+    // Reset state when id changes
+    setFilm(null);
+    setLoading(true);
+    setCategory('');
+
+    // Check if we have SSR data for this specific film
+    if (initialData?.film && initialData.film.id.toString() === id) {
       const filmData = initialData.film;
       setFilm(filmData);
+      setLoading(false);
       
       // Determine category based on film's primary genre
       if (filmData && filmData.genres) {
@@ -46,7 +53,10 @@ const FilmDetail: React.FC<FilmDetailProps> = ({ initialData }) => {
     }
 
     const fetchFilm = async () => {
-      if (!id) return;
+      if (!id) {
+        setLoading(false);
+        return;
+      }
       
       try {
         const filmData = await fetchFilmById(id);
@@ -109,17 +119,20 @@ const FilmDetail: React.FC<FilmDetailProps> = ({ initialData }) => {
         {/* Header Section */}
         <header className="film-detail__header">
           <nav aria-label="Film detail navigation">
-          <Link to="/">
-          <button 
-              onClick={() => navigate(-1)} 
-              className="back-button"
-            >
-               Back
-            </button>
+            <Link to="/">
+              <Button 
+                variant={category as any}
+                size="medium"
+                onClick={() => navigate(-1)}
+              >
+                Back
+              </Button>
             </Link>
             
-            <Link to="/wishlist" className="wishlist-link">
-              My Wishlist
+            <Link to="/wishlist">
+              <Button variant={"wishlist" as any} size="medium">
+                My Wishlist
+              </Button>
             </Link>
           </nav>
         </header>

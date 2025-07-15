@@ -31,7 +31,7 @@ const WishList: React.FC = () => {
           >
             Clear All
           </Button>
-          <Link to="/" className="home-link">
+          <Link to="/">
             <Button variant="ghost" size="medium">
               Back to Home
             </Button>

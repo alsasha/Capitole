@@ -20,38 +20,7 @@
     padding: 1rem 0;
     border-bottom: 2px solid rgba(255, 255, 255, 0.2);
 
-    .back-button {
-      background: rgba(255, 255, 255, 0.2);
-      border: none;
-      color: white;
-      padding: 0.75rem 1.5rem;
-      border-radius: 25px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-      backdrop-filter: blur(10px);
 
-      &:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
-      }
-    }
-
-    .wishlist-link {
-      color: white;
-      text-decoration: none;
-      padding: 0.75rem 1.5rem;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 25px;
-      transition: all 0.3s ease;
-      font-weight: 600;
-      backdrop-filter: blur(10px);
-
-      &:hover {
-        background: rgba(255, 255, 255, 0.3);
-        transform: translateY(-2px);
-      }
-    }
   }
 
   &__mid-section {
@@ -171,41 +140,7 @@
     box-shadow: 0 20px 40px rgba(0, 210, 211, 0.2);
   }
   
-  .film-detail__header {
-    .back-button {
-      font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
-      background: linear-gradient(135deg, #00d2d3, #54a0ff);
-      border: 3px solid #00d2d3;
-      color: white;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 5px 15px rgba(0, 210, 211, 0.3);
 
-      &:hover {
-        background: linear-gradient(135deg, #54a0ff, #00d2d3);
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 8px 25px rgba(0, 210, 211, 0.5);
-      }
-    }
-
-    .wishlist-link {
-      font-family: 'Comic Sans MS', 'Chalkboard SE', cursive;
-      background: linear-gradient(135deg, #ff9ff3, #f368e0);
-      border: 3px solid #ff9ff3;
-      color: white;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      box-shadow: 0 5px 15px rgba(255, 159, 243, 0.3);
-
-      &:hover {
-        background: linear-gradient(135deg, #f368e0, #ff9ff3);
-        transform: translateY(-3px) scale(1.05);
-        box-shadow: 0 8px 25px rgba(255, 159, 243, 0.5);
-      }
-    }
-  }
 
   .film-detail__button-description-area {
     .film-detail__title {
@@ -314,45 +249,7 @@
     box-shadow: 0 20px 40px rgba(231, 76, 60, 0.2);
   }
   
-  .film-detail__header {
-    .back-button {
-      font-family: 'Creepster', 'Chiller', cursive;
-      background: linear-gradient(135deg, #e74c3c, #c0392b);
-      border: 3px solid #e74c3c;
-      color: white;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      box-shadow: 0 5px 15px rgba(231, 76, 60, 0.4);
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
 
-      &:hover {
-        background: linear-gradient(135deg, #c0392b, #e74c3c);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(231, 76, 60, 0.6);
-        text-shadow: 3px 3px 6px rgba(0, 0, 0, 1);
-      }
-    }
-
-    .wishlist-link {
-      font-family: 'Creepster', 'Chiller', cursive;
-      background: linear-gradient(135deg, #2c3e50, #34495e);
-      border: 3px solid #2c3e50;
-      color: white;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      box-shadow: 0 5px 15px rgba(44, 62, 80, 0.4);
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
-
-      &:hover {
-        background: linear-gradient(135deg, #34495e, #2c3e50);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(44, 62, 80, 0.6);
-        text-shadow: 3px 3px 6px rgba(0, 0, 0, 1);
-      }
-    }
-  }
 
   .film-detail__button-description-area {
     .film-detail__title {
@@ -469,75 +366,7 @@
     box-shadow: 0 20px 40px rgba(155, 89, 182, 0.2);
   }
   
-  .film-detail__header {
-    .back-button {
-      font-family: 'Orbitron', 'Courier New', monospace;
-      background: linear-gradient(135deg, #9b59b6, #8e44ad);
-      border: 3px solid #9b59b6;
-      color: white;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      box-shadow: 0 5px 15px rgba(155, 89, 182, 0.4);
-      position: relative;
-      overflow: hidden;
 
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s;
-      }
-
-      &:hover {
-        background: linear-gradient(135deg, #8e44ad, #9b59b6);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(155, 89, 182, 0.6);
-
-        &::before {
-          left: 100%;
-        }
-      }
-    }
-
-    .wishlist-link {
-      font-family: 'Orbitron', 'Courier New', monospace;
-      background: linear-gradient(135deg, #3498db, #2980b9);
-      border: 3px solid #3498db;
-      color: white;
-      font-weight: bold;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      box-shadow: 0 5px 15px rgba(52, 152, 219, 0.4);
-      position: relative;
-      overflow: hidden;
-
-      &::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-        transition: left 0.5s;
-      }
-
-      &:hover {
-        background: linear-gradient(135deg, #2980b9, #3498db);
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(52, 152, 219, 0.6);
-
-        &::before {
-          left: 100%;
-        }
-      }
-    }
-  }
 
   .film-detail__button-description-area {
     .film-detail__title {

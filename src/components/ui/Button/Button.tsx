@@ -3,7 +3,7 @@ import './Button.scss';
 
 export interface ButtonProps {
   children: React.ReactNode;
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost';
+  variant?: 'primary' | 'secondary' | 'danger' | 'ghost' | 'comedy' | 'horror' | 'scifi' | 'wishlist';
   size?: 'small' | 'medium' | 'large';
   disabled?: boolean;
   onClick?: () => void;
