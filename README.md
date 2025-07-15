@@ -12,8 +12,14 @@ A modern React-based film discovery application with server-side rendering, buil
 
 1. **Clone and install dependencies**
    ```bash
-   git clone <repository-url>
+   # Using GitHub CLI
+   gh repo clone alsasha/Capitole
    cd Capitole
+   
+   # Or using git directly
+   git clone https://github.com/alsasha/Capitole.git
+   cd Capitole
+   
    npm install
    ```
 
