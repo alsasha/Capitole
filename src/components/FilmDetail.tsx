@@ -4,15 +4,47 @@ import { fetchFilmById, getImageUrl, type Film, GENRE_CATEGORIES } from '../serv
 import { useWishList } from '../context/WishListContext';
 import './FilmDetail.scss';
 
-const FilmDetail: React.FC = () => {
+interface FilmDetailProps {
+  initialData?: {
+    comedy?: any[];
+    horror?: any[];
+    scifi?: any[];
+    film?: Film;
+  } | null;
+}
+
+const FilmDetail: React.FC<FilmDetailProps> = ({ initialData }) => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { addToWishList, removeFromWishList, isInWishList } = useWishList();
-  const [film, setFilm] = useState<Film | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [film, setFilm] = useState<Film | null>(initialData?.film || null);
+  const [loading, setLoading] = useState(!initialData?.film);
   const [category, setCategory] = useState<string>('');
 
   useEffect(() => {
+    if (initialData?.film) {
+      // Use the film from SSR data
+      const filmData = initialData.film;
+      setFilm(filmData);
+      
+      // Determine category based on film's primary genre
+      if (filmData && filmData.genres) {
+        const genreIds = filmData.genres.map(genre => genre.id);
+        // Check if film has any of our main genre categories
+        if (genreIds.includes(GENRE_CATEGORIES.comedy.id)) {
+          setCategory('comedy');
+        } else if (genreIds.includes(GENRE_CATEGORIES.horror.id)) {
+          setCategory('horror');
+        } else if (genreIds.includes(GENRE_CATEGORIES.scifi.id)) {
+          setCategory('scifi');
+        } else {
+          // Default to comedy if no matching genre
+          setCategory('comedy');
+        }
+      }
+      return;
+    }
+
     const fetchFilm = async () => {
       if (!id) return;
       
@@ -43,7 +75,7 @@ const FilmDetail: React.FC = () => {
     };
 
     fetchFilm();
-  }, [id]);
+  }, [id, initialData]);
 
   const handleWishListToggle = () => {
     if (!film) return;

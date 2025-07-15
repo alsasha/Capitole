@@ -5,9 +5,10 @@ import './Home.scss';
 
 interface HomeProps {
   initialData?: {
-    comedy: Film[];
-    horror: Film[];
-    scifi: Film[];
+    comedy?: Film[];
+    horror?: Film[];
+    scifi?: Film[];
+    film?: any;
   } | null;
 }
 
