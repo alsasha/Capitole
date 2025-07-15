@@ -51,6 +51,9 @@ async function createServer() {
       const html = template
         .replace(`<!--app-html-->`, appHtml)
         .replace('<!--ssr-data-->', initialData ? `<script>window.__INITIAL_DATA__ = ${JSON.stringify(initialData)};</script>` : '')
+        .replace('</head>', `
+          <link rel="stylesheet" href="/src/styles/critical.scss">
+        </head>`)
 
       // 6. Send the rendered HTML back.
       res.status(200).set({ 'Content-Type': 'text/html' }).end(html)
