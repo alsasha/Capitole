@@ -169,6 +169,7 @@
     text-transform: uppercase;
     letter-spacing: 1px;
     box-shadow: 0 5px 15px rgba(255, 159, 243, 0.3);
+    margin-left: 10px;
 
     &:hover:not(:disabled) {
       background: linear-gradient(135deg, #f368e0, #ff9ff3);

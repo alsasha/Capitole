@@ -2,6 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { getImageUrl, type Film } from '../../../services/api';
 import { ROUTES } from '../../../constants';
+import { filmUtils } from '../../../utils/safeData';
 import './FilmCard.scss';
 
 export interface FilmCardProps {
@@ -38,10 +39,10 @@ export const FilmCard: React.FC<FilmCardProps> = ({
       </div>
       <div className="film-card__info">
         <h3 className="film-card__title">{film.title}</h3>
-        <p className="film-card__rating">★ {film.vote_average.toFixed(1)}</p>
+        <p className="film-card__rating">★ {filmUtils.formatRating(film.vote_average)}</p>
         {showYear && film.release_date && (
           <p className="film-card__year">
-            {new Date(film.release_date).getFullYear()}
+            {filmUtils.getYearFromDate(film.release_date)}
           </p>
         )}
       </div>

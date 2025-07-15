@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { fetchFilmById, getImageUrl, type Film, GENRE_CATEGORIES } from '../services/api';
+import { fetchFilmById, getImageUrl, type Film } from '../services/api';
 import { useWishList } from '../context/WishListContext';
 import { Button } from './ui';
+import { filmUtils } from '../utils/safeData';
 import './FilmDetail.scss';
 
 interface FilmDetailProps {
@@ -36,18 +37,7 @@ const FilmDetail: React.FC<FilmDetailProps> = ({ initialData }) => {
       
       // Determine category based on film's primary genre
       if (filmData && filmData.genres) {
-        const genreIds = filmData.genres.map(genre => genre.id);
-        // Check if film has any of our main genre categories
-        if (genreIds.includes(GENRE_CATEGORIES.comedy.id)) {
-          setCategory('comedy');
-        } else if (genreIds.includes(GENRE_CATEGORIES.horror.id)) {
-          setCategory('horror');
-        } else if (genreIds.includes(GENRE_CATEGORIES.scifi.id)) {
-          setCategory('scifi');
-        } else {
-          // Default to comedy if no matching genre
-          setCategory('comedy');
-        }
+        setCategory(filmUtils.getFilmCategory(filmData.genres));
       }
       return;
     }
@@ -64,18 +54,7 @@ const FilmDetail: React.FC<FilmDetailProps> = ({ initialData }) => {
         
         // Determine category based on film's primary genre
         if (filmData && filmData.genres) {
-          const genreIds = filmData.genres.map(genre => genre.id);
-          // Check if film has any of our main genre categories
-          if (genreIds.includes(GENRE_CATEGORIES.comedy.id)) {
-            setCategory('comedy');
-          } else if (genreIds.includes(GENRE_CATEGORIES.horror.id)) {
-            setCategory('horror');
-          } else if (genreIds.includes(GENRE_CATEGORIES.scifi.id)) {
-            setCategory('scifi');
-          } else {
-            // Default to comedy if no matching genre
-            setCategory('comedy');
-          }
+          setCategory(filmUtils.getFilmCategory(filmData.genres));
         }
       } catch (error) {
         console.error('Error fetching film:', error);
@@ -152,9 +131,9 @@ const FilmDetail: React.FC<FilmDetailProps> = ({ initialData }) => {
             <h1 className="film-detail__title">{film.title}</h1>
             
             <div className="film-detail__meta">
-              <span className="film-detail__rating"> {film.vote_average.toFixed(1)}</span>
+              <span className="film-detail__rating"> {filmUtils.formatRating(film.vote_average)}</span>
               <span className="film-detail__year">
-                {new Date(film.release_date).getFullYear()}
+                {filmUtils.getYearFromDate(film.release_date)}
               </span>
             </div>
 
@@ -190,11 +169,11 @@ const FilmDetail: React.FC<FilmDetailProps> = ({ initialData }) => {
             <h3>Details</h3>
             <div className="detail-item">
               <span className="detail-label">Release Date:</span>
-              <span className="detail-value">{new Date(film.release_date).toLocaleDateString()}</span>
+              <span className="detail-value">{filmUtils.formatReleaseDate(film.release_date)}</span>
             </div>
             <div className="detail-item">
               <span className="detail-label">Rating:</span>
-              <span className="detail-value">{film.vote_average.toFixed(1)}/10</span>
+              <span className="detail-value">{filmUtils.formatRating(film.vote_average)}/10</span>
             </div>
             <div className="detail-item">
               <span className="detail-label">Film ID:</span>
