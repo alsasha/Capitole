@@ -12,6 +12,32 @@ interface HomeProps {
   } | null;
 }
 
+// Local storage keys and cache expiration time (1 hour)
+const STORAGE_KEYS = {
+  COMEDY: 'films_comedy',
+  HORROR: 'films_horror',
+  SCIFI: 'films_scifi',
+} as const;
+
+// Helper functions for localStorage
+const getCachedData = (key: string) => {
+  try {
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : null;
+  } catch (error) {
+    console.error('Error reading from localStorage:', error);
+    return null;
+  }
+};
+
+const setCachedData = (key: string, data: any) => {
+  try {
+    localStorage.setItem(key, JSON.stringify(data));
+  } catch (error) {
+    console.error('Error writing to localStorage:', error);
+  }
+};
+
 const Home: React.FC<HomeProps> = ({ initialData }) => {
   const [comedyFilms, setComedyFilms] = useState<Film[]>(initialData?.comedy || []);
   const [horrorFilms, setHorrorFilms] = useState<Film[]>(initialData?.horror || []);
@@ -25,10 +51,28 @@ const Home: React.FC<HomeProps> = ({ initialData }) => {
       setHorrorFilms(initialData.horror || []);
       setScifiFilms(initialData.scifi || []);
       setLoading(false);
+      
+      // Cache the SSR data
+      setCachedData(STORAGE_KEYS.COMEDY, initialData.comedy || []);
+      setCachedData(STORAGE_KEYS.HORROR, initialData.horror || []);
+      setCachedData(STORAGE_KEYS.SCIFI, initialData.scifi || []);
       return;
     }
 
-    // Otherwise, fetch data on the client
+    // Check if we have valid cached data
+    const cachedComedy = getCachedData(STORAGE_KEYS.COMEDY);
+    const cachedHorror = getCachedData(STORAGE_KEYS.HORROR);
+    const cachedScifi = getCachedData(STORAGE_KEYS.SCIFI);
+    
+    if (cachedComedy && cachedHorror && cachedScifi) {
+      setComedyFilms(cachedComedy);
+      setHorrorFilms(cachedHorror);
+      setScifiFilms(cachedScifi);
+      setLoading(false);
+      return;
+    }
+
+    // Otherwise, fetch data from API
     const fetchAllFilms = async () => {
       setLoading(true);
       try {
@@ -38,9 +82,15 @@ const Home: React.FC<HomeProps> = ({ initialData }) => {
           fetchFilmsByCategory('scifi')
         ]);
 
+        // Update state
         setComedyFilms(comedy);
         setHorrorFilms(horror);
         setScifiFilms(scifi);
+
+        // Cache the data
+        setCachedData(STORAGE_KEYS.COMEDY, comedy);
+        setCachedData(STORAGE_KEYS.HORROR, horror);
+        setCachedData(STORAGE_KEYS.SCIFI, scifi);
       } catch (error) {
         console.error('Error fetching films:', error);
       } finally {

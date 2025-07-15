@@ -5,7 +5,7 @@ import { getImageUrl } from '../services/api';
 import './WishList.scss';
 
 const WishList: React.FC = () => {
-  const { wishList, removeFromWishList } = useWishList();
+  const { wishList, removeFromWishList, clearWishList } = useWishList();
 
   if (wishList.length === 0) {
     return (
@@ -24,10 +24,19 @@ const WishList: React.FC = () => {
   return (
     <div className="wishlist">
       <header className="wishlist__header">
-        <h1>My Wishlist</h1>
-        <Link to="/" className="home-link">
-          Back to Home
-        </Link>
+        <h1>My Wishlist ({wishList.length} films)</h1>
+        <div className="wishlist__header-actions">
+          <button 
+            onClick={clearWishList}
+            className="clear-all-button"
+            aria-label="Clear all films from wishlist"
+          >
+            Clear All
+          </button>
+          <Link to="/" className="home-link">
+            Back to Home
+          </Link>
+        </div>
       </header>
 
       <main className="wishlist__content">

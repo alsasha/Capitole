@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
 import type { Film } from '../services/api';
 
@@ -7,9 +7,32 @@ interface WishListContextType {
   addToWishList: (film: Film) => void;
   removeFromWishList: (filmId: number) => void;
   isInWishList: (filmId: number) => boolean;
+  clearWishList: () => void;
 }
 
 const WishListContext = createContext<WishListContextType | undefined>(undefined);
+
+// Local storage key for wishlist
+const WISHLIST_STORAGE_KEY = 'film_wishlist';
+
+// Helper functions for localStorage
+const getWishListFromStorage = (): Film[] => {
+  try {
+    const data = localStorage.getItem(WISHLIST_STORAGE_KEY);
+    return data ? JSON.parse(data) : [];
+  } catch (error) {
+    console.error('Error reading wishlist from localStorage:', error);
+    return [];
+  }
+};
+
+const saveWishListToStorage = (wishList: Film[]) => {
+  try {
+    localStorage.setItem(WISHLIST_STORAGE_KEY, JSON.stringify(wishList));
+  } catch (error) {
+    console.error('Error saving wishlist to localStorage:', error);
+  }
+};
 
 export const useWishList = () => {
   const context = useContext(WishListContext);
@@ -25,6 +48,21 @@ interface WishListProviderProps {
 
 export const WishListProvider: React.FC<WishListProviderProps> = ({ children }) => {
   const [wishList, setWishList] = useState<Film[]>([]);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  // Load wishlist from localStorage on mount
+  useEffect(() => {
+    const savedWishList = getWishListFromStorage();
+    setWishList(savedWishList);
+    setIsInitialized(true);
+  }, []);
+
+  // Save wishlist to localStorage whenever it changes
+  useEffect(() => {
+    if (isInitialized) {
+      saveWishListToStorage(wishList);
+    }
+  }, [wishList, isInitialized]);
 
   const addToWishList = (film: Film) => {
     setWishList(prev => {
@@ -43,12 +81,17 @@ export const WishListProvider: React.FC<WishListProviderProps> = ({ children }) 
     return wishList.some(film => film.id === filmId);
   };
 
+  const clearWishList = () => {
+    setWishList([]);
+  };
+
   return (
     <WishListContext.Provider value={{
       wishList,
       addToWishList,
       removeFromWishList,
-      isInWishList
+      isInWishList,
+      clearWishList
     }}>
       {children}
     </WishListContext.Provider>
